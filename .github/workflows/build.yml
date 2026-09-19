@@ -1,15 +1,13 @@
 name: Build Khaenriah Kernel
 
-# TEMPORARILY DISABLED until requests are finished.
-# To re-enable: uncomment the workflow_dispatch block below.
-on: {}
-#  workflow_dispatch:
-#    inputs:
-#      publish_release:
-#        description: "Publish a GitHub release after a successful build"
-#        required: true
-#        default: false
-#        type: boolean
+on:
+  workflow_dispatch:
+    inputs:
+      publish_release:
+        description: "Publish a GitHub release after a successful build"
+        required: true
+        default: false
+        type: boolean
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
