@@ -1,13 +1,15 @@
 name: Build Khaenriah Kernel
 
-on:
-  workflow_dispatch:
-    inputs:
-      publish_release:
-        description: "Publish a GitHub release after a successful build"
-        required: true
-        default: false
-        type: boolean
+# TEMPORARILY DISABLED until requests are finished.
+# To re-enable: uncomment the workflow_dispatch block below.
+on: {}
+#  workflow_dispatch:
+#    inputs:
+#      publish_release:
+#        description: "Publish a GitHub release after a successful build"
+#        required: true
+#        default: false
+#        type: boolean
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -21,8 +23,7 @@ env:
   KERNEL_VARIANT: "singularity-birth"
   PROTON_CLANG_REPO: "https://github.com/kdrag0n/proton-clang.git"
   ANYKERNEL_REPO: "https://github.com/dain09/AnyKernel3.git"
-  KERNELSU_SETUP: "https://raw.githubusercontent.com/backslashxx/KernelSU/refs/heads/master/kernel/setup.sh"
-  KERNELSU_SETUP_BRANCH: master
+  KSUNEXT_SETUP: "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh"
   KBUILD_BUILD_USER: "@d_ai_n"
   KBUILD_BUILD_HOST: "ubuntu-24.04"
   PRE_SLMK_BASE: "ba2a841dabfe7972a68dc81fa51f22fa9e9e229f"
@@ -74,9 +75,11 @@ jobs:
         run: |
           git clone --depth 1 -b r5p $ANYKERNEL_REPO .deps/AnyKernel3
 
-      - name: Integrate KernelSU
+      - name: Integrate KernelSU-Next (latest)
         run: |
-          curl -LSs "$KERNELSU_SETUP" | bash -s $KERNELSU_SETUP_BRANCH
+          # No branch/tag arg = setup.sh checks out the latest tag,
+          # so every workflow run pulls the newest KernelSU-Next.
+          curl -LSs "$KSUNEXT_SETUP" | bash -
 
       - name: Configure and Build Kernel
         env:
