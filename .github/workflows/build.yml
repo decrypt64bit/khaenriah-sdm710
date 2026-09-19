@@ -24,8 +24,6 @@ env:
   KSUNEXT_SETUP: "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh"
   KBUILD_BUILD_USER: "@d_ai_n"
   KBUILD_BUILD_HOST: "ubuntu-24.04"
-  PRE_SLMK_BASE: "ba2a841dabfe7972a68dc81fa51f22fa9e9e229f"
-  LAST_SLMK_COMMIT: "53fa58342e3203584740df2de23dda896799f322"
 
 jobs:
   build:
@@ -43,21 +41,15 @@ jobs:
       - name: Checkout kernel source
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0
-
-      - name: Drop Simple LMK commits via rebase
-        if: ${{ matrix.variant.kernel_version == 'singularity-birth-EOL' }}
-        run: |
-          git config user.email "action@github.com"
-          git config user.name "GitHub Action"
-          git rebase --onto $PRE_SLMK_BASE $LAST_SLMK_COMMIT
+          # Shallow checkout is enough (no rebase); speeds up CI a lot.
+          fetch-depth: 1
 
       - name: Switch non-SLMK variant to classic LMK
         if: ${{ matrix.variant.kernel_version == 'singularity-birth-EOL' }}
         run: |
-          # SLMK commits were dropped above, so enable the self-starting
-          # classic lowmemorykiller (with built-in adj/minfree defaults)
-          # to guarantee this variant still has a working LMK.
+          # Don't rebase SLMK commits away (conflict-prone); just disable
+          # the driver and enable the self-starting classic lowmemorykiller
+          # (built-in adj/minfree defaults) so this variant keeps a working LMK.
           ./scripts/config --file arch/arm64/configs/$KERNEL_DEFCONFIG \
             --disable ANDROID_SIMPLE_LMK \
             --enable ANDROID_LOW_MEMORY_KILLER
