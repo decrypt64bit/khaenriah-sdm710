@@ -75,11 +75,12 @@ jobs:
         run: |
           git clone --depth 1 -b r5p $ANYKERNEL_REPO .deps/AnyKernel3
 
-      - name: Integrate KernelSU-Next (latest)
+      - name: Integrate KernelSU-Next legacy (latest)
         run: |
-          # No branch/tag arg = setup.sh checks out the latest tag,
-          # so every workflow run pulls the newest KernelSU-Next.
-          curl -LSs "$KSUNEXT_SETUP" | bash -
+          # 'legacy' branch = backported driver for 4.14 and older non-GKI
+          # kernels (mainline only supports newer kernels). setup.sh checks
+          # out the newest legacy tag, so every run still pulls the latest.
+          curl -LSs "$KSUNEXT_SETUP" | bash -s legacy
 
       - name: Configure and Build Kernel
         env:
@@ -97,6 +98,13 @@ jobs:
 
           ./scripts/config --file out/.config \
              --set-str CONFIG_LOCALVERSION "-${KERNEL_NAME}-${KERNEL_VERSION}"
+
+          # Legacy KSUN hooks via kprobe (required on 4.9 non-GKI).
+          # Forced here (not just defconfig) so olddefconfig can't silently
+          # drop them to the Kconfig default.
+          ./scripts/config --file out/.config \
+             --enable KSU \
+             --enable KSU_KPROBE_HOOKS
 
           make O=out ARCH=arm64 \
             CC="$TC_PATH/clang" \

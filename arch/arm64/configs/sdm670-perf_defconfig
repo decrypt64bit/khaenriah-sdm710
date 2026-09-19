@@ -819,9 +819,9 @@ CONFIG_DECOMPRESS_LZ4=y
 #Fast Charge
 CONFIG_FORCE_FAST_CHARGE=y
 
-# KernelSU-Next Hookless Configuration
+# KernelSU-Next (legacy, kprobe hooks for 4.9 non-GKI) Configuration
 CONFIG_KSU=y
-# CONFIG_KPROBES is not set
+CONFIG_KPROBES=y
 # CONFIG_KSU_KPROBES_KSUD is not set
 CONFIG_KSU_TAMPER_SYSCALL_TABLE=y
 CONFIG_KSU_LSM_SECURITY_HOOKS=y
