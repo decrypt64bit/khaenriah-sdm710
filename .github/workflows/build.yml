@@ -21,11 +21,12 @@ env:
   KERNEL_VARIANT: "singularity-birth"
   PROTON_CLANG_REPO: "https://github.com/kdrag0n/proton-clang.git"
   ANYKERNEL_REPO: "https://github.com/dain09/AnyKernel3.git"
-  # Hookless KSU driver (backslashxx/KernelSU). Pinned to v3.3.0 to match
-  # manager KernelSU_Next_v3.3.0-74-ga951768d_33288. setup.sh checks out
-  # this tag on every run for reproducible builds.
+  # Hookless KSU driver (backslashxx/KernelSU). Pinned to commit a951768d,
+  # the exact source your manager APK was built from
+  # (KernelSU_Next_v3.3.0-74-ga951768d_33288). setup.sh checks out this
+  # commit on every run for reproducible, manager-matched builds.
   KERNELSU_SETUP: "https://raw.githubusercontent.com/dain09/KernelSU/refs/heads/hookless/kernel/setup.sh"
-  KERNELSU_SETUP_BRANCH: v3.3.0
+  KERNELSU_SETUP_BRANCH: a951768d0dd1387442075ce51a1ec27d931aca8c
   KBUILD_BUILD_USER: "@d_ai_n"
   KBUILD_BUILD_HOST: "ubuntu-24.04"
 
